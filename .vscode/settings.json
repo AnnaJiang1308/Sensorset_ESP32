@@ -1,0 +1,20 @@
+{
+    "C_Cpp.autoAddFileAssociations": true,
+    "C_Cpp.autocomplete": "Default",
+    "C_Cpp.enhancedColorization": "Enabled",
+    "C_Cpp.formatting": "clangFormat",
+    "C_Cpp.intelliSenseEngine": "Default",
+    "files.associations": {
+        "esp_spi_flash.h": "c",
+        "esp_system.h": "c",
+        "freertos.h": "c",
+        "mqtt_client.h": "c",
+        "protocol_examples_common.h": "c",
+        "task.h": "c",
+        "nvs_flash.h": "c",
+        "sdkconfig.h": "c",
+        "i2c.h": "c",
+        "main.h": "c"
+    },
+    "idf.gitPath": "C:\\Users\\17501\\.espressif\\tools\\idf-git\\cmd\\git.exe",
+}
