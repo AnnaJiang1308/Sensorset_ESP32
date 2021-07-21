@@ -79,6 +79,8 @@ typedef struct {
   int16_t dig_H4; ///< humidity compensation value
   int16_t dig_H5; ///< humidity compensation value
   int8_t dig_H6;  ///< humidity compensation value
+
+  float temp;
 } bme280_calib_data;
 /*=========================================================================*/
 

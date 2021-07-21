@@ -109,22 +109,7 @@ float readTemperature(i2c_port_t i2c_num) {
 
 
 
-static esp_err_t BMP280_Reset(i2c_port_t i2c_num){
-  int ret;
-  i2c_cmd_handle_t cmd = i2c_cmd_link_create();
-  i2c_master_start(cmd);
-  i2c_master_write_byte(cmd, BMP280_SENSOR_ADDR << 1 | WRITE_BIT, ACK_CHECK_EN);
-  i2c_master_write_byte(cmd, BMP280_CMD_START, ACK_CHECK_EN);
-  i2c_master_stop(cmd);
-  ret = i2c_master_cmd_begin(i2c_num, cmd, 1000 / portTICK_RATE_MS);
-  i2c_cmd_link_delete(cmd);
-  if (ret != ESP_OK) {
-    return ret;
-  }
-  vTaskDelay(30 / portTICK_RATE_MS);
-  return ret;
 
-}
 
 
 /**
@@ -156,9 +141,9 @@ static esp_err_t BMP280_Read_coefficients(i2c_port_t i2c_num){
 
 
 
-/*
-static esp_err_t i2c_master_sensor_test(i2c_port_t i2c_num, uint8_t *data_h,
-                                        uint8_t *data_l) {
+
+static esp_err_t i2c_master_sensor_BMP280(i2c_port_t i2c_num) {
+
   int ret;
   
   i2c_cmd_handle_t cmd = i2c_cmd_link_create();
@@ -169,20 +154,15 @@ static esp_err_t i2c_master_sensor_test(i2c_port_t i2c_num, uint8_t *data_h,
   ret = i2c_master_cmd_begin(i2c_num, cmd, 1000 / portTICK_RATE_MS);
   i2c_cmd_link_delete(cmd);
   if (ret != ESP_OK) {
+    printf("1111111");
     return ret;
   }
   vTaskDelay(30 / portTICK_RATE_MS);
-  cmd = i2c_cmd_link_create();
-  i2c_master_start(cmd);
-  i2c_master_write_byte(cmd, BMP280_SENSOR_ADDR << 1 | READ_BIT, ACK_CHECK_EN);
-  i2c_master_read_byte(cmd, data_h, ACK_VAL);
-  i2c_master_read_byte(cmd, data_l, NACK_VAL);
-  i2c_master_stop(cmd);
-  ret = i2c_master_cmd_begin(i2c_num, cmd, 1000 / portTICK_RATE_MS);
-  i2c_cmd_link_delete(cmd);
+
+  ret= BMP280_Read_coefficients(i2c_num);
   return ret;
 }
-*/
+
 /**
  * @brief i2c master initialization
  */
@@ -213,23 +193,7 @@ static void i2c_test_task(void *arg) {
   while (1) {
 
     ESP_LOGI(TAG, "TASK[%d] test cnt: %d", task_idx, cnt++);
-    ret=BMP280_Reset(I2C_MASTER_NUM);
-    if (ret != ESP_OK) {
-      printf("1111111\n");
-    }
-    
-
-    ret=BMP280_Read_coefficients(I2C_MASTER_NUM);
-    if (ret != ESP_OK) {
-      printf("222222\n");
-    }
-
-    //FIXME:test code
-    uint32_t adc_T;
-    i2c_Read_Registor(I2C_MASTER_NUM,250,&adc_T);
-    printf("Value of adc_T,%d",adc_T);
-    
-    //value_Temperature=readTemperature(I2C_MASTER_NUM);
+    ret=i2c_master_sensor_BMP280(I2C_MASTER_NUM);
     
     xSemaphoreTake(print_mux, portMAX_DELAY);
 
@@ -239,10 +203,12 @@ static void i2c_test_task(void *arg) {
     } else if (ret == ESP_OK) {
 
 
-      /*
+      
       printf("*******************\n");
       printf("TASK[%d]  MASTER READ SENSOR( BMP280 )\n", task_idx);
       printf("*******************\n");
+
+      /*
 
       printf("sensor val: %.02f  °C \n",value_Temperature);
       
