@@ -26,12 +26,12 @@ SemaphoreHandle_t print_mux = NULL;
 /**
  * @brief Reads a 16 bit unsigned int via I2C
  */
-uint16_t i2c_Read16(i2c_port_t i2c_num,i2c_cmd_handle_t* cmd){
+uint16_t i2c_Read16(i2c_port_t i2c_num,i2c_cmd_handle_t cmd){
   uint16_t value_16;
   uint8_t value_8_front=0;
   uint8_t value_8_reverse=0;
-  i2c_master_read_byte(*cmd, &value_8_reverse, ACK_VAL);
-  i2c_master_read_byte(*cmd, &value_8_front, ACK_VAL);
+  i2c_master_read_byte(cmd, &value_8_reverse, ACK_VAL);
+  i2c_master_read_byte(cmd, &value_8_front, ACK_VAL);
   value_16=(value_8_front<<8|value_8_reverse);
   
   return value_16;
@@ -154,12 +154,39 @@ static esp_err_t i2c_master_sensor_BMP280(i2c_port_t i2c_num) {
   ret = i2c_master_cmd_begin(i2c_num, cmd, 1000 / portTICK_RATE_MS);
   i2c_cmd_link_delete(cmd);
   if (ret != ESP_OK) {
-    printf("1111111");
     return ret;
   }
   vTaskDelay(30 / portTICK_RATE_MS);
 
-  ret= BMP280_Read_coefficients(i2c_num);
+  //FIXME:text code
+  //Qusetion:bug of Read16? 
+
+  //ret= BMP280_Read_coefficients(i2c_num);
+
+  uint8_t data1=0;
+  uint8_t data2=0;
+  cmd = i2c_cmd_link_create();
+  i2c_master_start(cmd);
+  i2c_master_write_byte(cmd, BMP280_SENSOR_ADDR << 1 | READ_BIT, ACK_CHECK_EN);
+    //TODO:Read all data via i2c
+  i2c_master_read_byte(cmd,&data1,ACK_VAL);
+  i2c_master_read_byte(cmd,&data2,NACK_VAL);
+  
+  
+  
+  
+  //_bme280_calib.dig_T1=i2c_Read16(i2c_num,cmd);
+  //_bme280_calib.dig_T2=i2c_ReadS16(i2c_num,&cmd);
+  //_bme280_calib.dig_T3=i2c_ReadS16(i2c_num,&cmd);
+  //printf("value of temp:%d \t %d \t %d \n",_bme280_calib.dig_T1,_bme280_calib.dig_T2,_bme280_calib.dig_T3);
+
+
+  
+  //_bme280_calib.dig_H6=i2c_master_read_byte(cmd,&data, NACK_VAL);
+  i2c_master_stop(cmd);
+  ret = i2c_master_cmd_begin(i2c_num, cmd, 1000 / portTICK_RATE_MS);
+  i2c_cmd_link_delete(cmd);
+  printf("data1:%d\tdata2:%d\n",data1,data2);
   return ret;
 }
 
