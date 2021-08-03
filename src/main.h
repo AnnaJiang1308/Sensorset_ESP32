@@ -17,6 +17,7 @@ extern "C" {
 #include "driver/gpio.h"
 #include "hal/i2c_types.h"
 #include "soc/i2c_caps.h"
+#include "i2c_msg.h"
 
 #define _I2C_NUMBER(num) I2C_NUM_##num
 #define I2C_NUMBER(num) _I2C_NUMBER(num)
@@ -90,4 +91,4 @@ bme280_calib_data _bme280_calib;
 }
 #endif
 
-#endif /*_DRIVER_I2C_H_*/
+#endif /*_MAIN_H_*/
