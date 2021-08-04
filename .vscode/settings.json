@@ -14,7 +14,8 @@
         "nvs_flash.h": "c",
         "sdkconfig.h": "c",
         "i2c.h": "c",
-        "main.h": "c"
+        "main.h": "c",
+        "i2c_msg.h": "c"
     },
     "idf.gitPath": "C:\\Users\\17501\\.espressif\\tools\\idf-git\\cmd\\git.exe",
 }
