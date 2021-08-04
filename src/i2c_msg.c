@@ -21,7 +21,7 @@ esp_err_t i2c_master_init(void)
                             I2C_MASTER_TX_BUF_DISABLE, 0);  
 }
 
-esp_err_t i2c_Read_Registor(i2c_port_t i2c_num, uint8_t ADD, int32_t *data)
+esp_err_t i2c_Read_Registor_24(i2c_port_t i2c_num, uint8_t ADD, int32_t *data)
 {
   int ret;
   uint8_t value_1 = 0;
@@ -40,6 +40,31 @@ esp_err_t i2c_Read_Registor(i2c_port_t i2c_num, uint8_t ADD, int32_t *data)
   ret = i2c_master_cmd_begin(i2c_num, cmd, 1000 / portTICK_RATE_MS);
   i2c_cmd_link_delete(cmd);
   *data = (value_1 << 16) | (value_2 << 8) | value_3;
+  if (ret != ESP_OK)
+  {
+    return ret;
+  }
+  vTaskDelay(30 / portTICK_RATE_MS);
+  return ret;
+}
+
+esp_err_t i2c_Read_Registor_16(i2c_port_t i2c_num, uint8_t ADD, uint16_t *data)
+{
+  int ret;
+  uint8_t value_1 = 0;
+  uint8_t value_2 = 0;
+  i2c_cmd_handle_t cmd = i2c_cmd_link_create();
+  i2c_master_start(cmd);
+  i2c_master_write_byte(cmd, BMP280_SENSOR_ADDR << 1 | WRITE_BIT, ACK_CHECK_EN);
+  i2c_master_write_byte(cmd, ADD, ACK_CHECK_EN);
+  i2c_master_start(cmd);
+  i2c_master_write_byte(cmd, BMP280_SENSOR_ADDR << 1 | READ_BIT, ACK_CHECK_EN);
+  i2c_master_read_byte(cmd, &value_1, ACK_VAL);
+  i2c_master_read_byte(cmd, &value_2, NACK_VAL);
+  i2c_master_stop(cmd);
+  ret = i2c_master_cmd_begin(i2c_num, cmd, 1000 / portTICK_RATE_MS);
+  i2c_cmd_link_delete(cmd);
+  *data = (value_1 << 8) | value_2;
   if (ret != ESP_OK)
   {
     return ret;

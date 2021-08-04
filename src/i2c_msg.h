@@ -42,9 +42,9 @@ esp_err_t i2c_master_init(void);
  *     - ESP_ERR_INVALID_ARG Parameter error
  */
 
-esp_err_t i2c_Read_Registor(i2c_port_t i2c_num, uint8_t ADD, int32_t *data);
+esp_err_t i2c_Read_Registor_24(i2c_port_t i2c_num, uint8_t ADD, int32_t *data);
 /**
- * @brief get I2C data of specific Registor
+ * @brief get I2C data of specific Registor in 3byte
  *
  * @param i2c_num I2C port number
  * @param ADD address of the registor need to be readen
@@ -57,6 +57,20 @@ esp_err_t i2c_Read_Registor(i2c_port_t i2c_num, uint8_t ADD, int32_t *data);
  *     - ESP_ERR_INVALID_ARG Parameter error
  */
 
+esp_err_t i2c_Read_Registor_16(i2c_port_t i2c_num, uint8_t ADD, uint16_t *data);
+/**
+ * @brief get I2C data of specific Registor in 2byte
+ *
+ * @param i2c_num I2C port number
+ * @param ADD address of the registor need to be readen
+ * @param data  address of the data to be read
+ * 
+ *
+ *
+ * @return
+ *     - ESP_OK Success
+ *     - ESP_ERR_INVALID_ARG Parameter error
+ */
 
 esp_err_t i2c_Write_Registor(i2c_port_t i2c_num, uint8_t ADD, int8_t data);
 /**

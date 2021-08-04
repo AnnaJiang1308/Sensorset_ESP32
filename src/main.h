@@ -87,6 +87,8 @@ typedef struct {
 
 bme280_calib_data _bme280_calib;
 
+int32_t t_fine;
+
 #ifdef __cplusplus
 }
 #endif
